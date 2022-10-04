@@ -12,17 +12,16 @@ sourceCompatibility = '11'
 repositories {
     mavenCentral()
 }
-jacoco {
-    toolVersion = "0.8.8"
-}
-
 test {
-    useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
 jacocoTestReport {
-    dependsOn test // tests are required to run before generating the report
-
+    dependsOn test
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
@@ -32,6 +31,10 @@ jacocoTestReport {
             ])
         }))
     }
+}
+jacoco {
+    toolVersion = "0.8.8"
+    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
 }
 
 dependencies {
